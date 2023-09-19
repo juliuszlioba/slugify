@@ -8,6 +8,12 @@ dependencies:
   '@astrojs/tailwind':
     specifier: ^5.0.0
     version: 5.0.0(astro@3.1.1)(tailwindcss@3.3.3)
+  '@fontsource/noto-sans':
+    specifier: ^5.0.12
+    version: 5.0.12
+  '@fontsource/pt-sans':
+    specifier: ^5.0.8
+    version: 5.0.8
   astro:
     specifier: ^3.1.1
     version: 3.1.1
@@ -722,6 +728,14 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /@fontsource/noto-sans@5.0.12:
+    resolution: {integrity: sha512-6qMnrAeCsjqI4tT2zWb1EQ/AeWr42iacn+QOV74pY1Ytm/0OY9jzSXlh4nK4mc9CbTmEZn1Iofa/SzvvKNMcpA==}
+    dev: false
+
+  /@fontsource/pt-sans@5.0.8:
+    resolution: {integrity: sha512-YCn2rcHLdQUNcTzrrHpPzzLqMat2s1TUTcBDXIHgHpUNar3jkrZ9U0wNGczu0C0WgFzUFShDtRUl3PehDi9P+g==}
+    dev: false
 
   /@jridgewell/gen-mapping@0.3.3:
     resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
