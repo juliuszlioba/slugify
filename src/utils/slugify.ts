@@ -25,7 +25,7 @@ const SPECIAL_CHARS_RE = new RegExp(`[${Object.keys(SPECIAL_CHARS).join("")}]`, 
 /**
  * Converts text into a lowercase, URL-friendly slug.
  *
- * @example slugify("Hällo Wörld & Ąžuolas!") // "haello-woerld-und-azuolas"
+ * @example slugify("Hällo Wörld & Ąžuolas!") // "haello-woerld-and-azuolas"
  */
 export function slugify(input: string): string {
   return (
