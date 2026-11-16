@@ -1,0 +1,177 @@
+---
+
+---
+
+<section class="w-full">
+  <header class="mb-14 text-center">
+    <h1 class="text-xs font-semibold uppercase tracking-[0.3em] text-gray-500">
+      Slugify
+    </h1>
+    <p class="mt-3 text-sm text-gray-600">
+      Turn any text into a clean, URL-friendly slug.
+    </p>
+  </header>
+
+  <div class="flex flex-col items-center">
+    <!-- Input -->
+    <label for="slugify-input" class="sr-only">Text</label>
+    <input
+      id="slugify-input"
+      type="text"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="Type or paste text…"
+      class="w-full border-b border-gray-800 bg-transparent px-2 pb-4 text-center text-2xl text-white outline-none transition-colors placeholder:text-gray-700 focus:border-gray-500 md:text-3xl"
+    />
+
+    <!-- Divider arrow -->
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="my-8 h-5 w-5 text-gray-700"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"></path>
+    </svg>
+
+    <!-- Output -->
+    <output
+      id="slugify-output"
+      for="slugify-input"
+      aria-live="polite"
+      data-empty
+      class="flex min-h-20 w-full items-center justify-center rounded-2xl border border-gray-800 bg-gray-900/60 px-6 py-5 text-center font-mono text-xl break-all text-white transition-colors duration-300 data-copied:border-green-500/40 data-copied:text-green-400 data-empty:text-gray-700 md:text-2xl"
+      >your-slug-appears-here</output
+    >
+
+    <!-- Actions -->
+    <div class="mt-8 flex items-center gap-3">
+      <button
+        id="slugify-copy"
+        type="button"
+        disabled
+        class="inline-flex h-10 items-center gap-2 rounded-full bg-white px-5 text-sm font-medium text-gray-950 transition hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-30"
+      >
+        <svg
+          id="copy-icon"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.75"
+          stroke="currentColor"
+          class="h-4 w-4"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path>
+        </svg>
+        <svg
+          id="check-icon"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="hidden h-4 w-4 text-green-600"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"></path>
+        </svg>
+        <span id="copy-label">Copy</span>
+      </button>
+
+      <button
+        id="slugify-clear"
+        type="button"
+        disabled
+        class="inline-flex h-10 items-center rounded-full border border-gray-800 px-5 text-sm font-medium text-gray-400 transition hover:border-gray-700 hover:text-white focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-30"
+      >
+        Clear
+      </button>
+    </div>
+
+    <p class="mt-10 hidden text-xs text-gray-600 md:block">
+      <kbd class="rounded border border-gray-800 px-1.5 py-0.5 font-sans">Enter</kbd>
+      to copy
+      <span class="mx-2 text-gray-800">·</span>
+      <kbd class="rounded border border-gray-800 px-1.5 py-0.5 font-sans">Esc</kbd>
+      to clear
+    </p>
+  </div>
+</section>
+
+<script>
+  import { slugify } from "../utils/slugify.ts";
+
+  const PLACEHOLDER = "your-slug-appears-here";
+
+  const input = document.querySelector<HTMLInputElement>("#slugify-input")!;
+  const output = document.querySelector<HTMLOutputElement>("#slugify-output")!;
+  const copyBtn = document.querySelector<HTMLButtonElement>("#slugify-copy")!;
+  const clearBtn = document.querySelector<HTMLButtonElement>("#slugify-clear")!;
+  const copyIcon = document.querySelector("#copy-icon")!;
+  const checkIcon = document.querySelector("#check-icon")!;
+  const copyLabel = document.querySelector("#copy-label")!;
+
+  let slug = "";
+  let resetTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function resetCopied() {
+    clearTimeout(resetTimer);
+    delete output.dataset.copied;
+    copyIcon.classList.remove("hidden");
+    checkIcon.classList.add("hidden");
+    copyLabel.textContent = "Copy";
+  }
+
+  function render() {
+    slug = slugify(input.value);
+    resetCopied();
+
+    if (slug) {
+      output.textContent = slug;
+      delete output.dataset.empty;
+    } else {
+      output.textContent = PLACEHOLDER;
+      output.dataset.empty = "";
+    }
+
+    copyBtn.disabled = !slug;
+    clearBtn.disabled = input.value === "";
+  }
+
+  async function copy() {
+    if (!slug) return;
+
+    await navigator.clipboard.writeText(slug);
+    output.dataset.copied = "";
+    copyIcon.classList.add("hidden");
+    checkIcon.classList.remove("hidden");
+    copyLabel.textContent = "Copied";
+
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(resetCopied, 2000);
+  }
+
+  function clear() {
+    input.value = "";
+    render();
+    input.focus();
+  }
+
+  input.addEventListener("input", render);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      copy();
+    } else if (e.key === "Escape") {
+      clear();
+    }
+  });
+  copyBtn.addEventListener("click", copy);
+  clearBtn.addEventListener("click", clear);
+
+  input.focus();
+</script>
